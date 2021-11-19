@@ -331,7 +331,7 @@ ARGV[1] = one
 ARGV[2] = two
 ARGV[3] = three
 ```
-6) NF => 현재 레코드의 필드 수 출력
+7) NF => 현재 레코드의 필드 수 출력
 ```
 $ cat testfile | awk '{print NF}'
 
@@ -346,3 +346,19 @@ $ cat testfile | awk 'NF > 4'
 I am the best programmer.
 My hobby is riding a bicycle.
 Coding is so much fun.
+```
+
+---
+### ***참고 사이트***
+
+[getopt](https://www.ibm.com/docs/ko/aix/7.2?topic=g-getopt-command)
+
+[getopts](https://www.ibm.com/docs/ko/aix/7.2?topic=g-getopts-command)
+
+[sed_1](https://blog.wonizz.tk/2019/08/07/linux-sed/ "기본 설명 참고")
+[sed_2](https://linuxstory1.tistory.com/entry/SED-%EB%AA%85%EB%A0%B9%EC%96%B4-%EC%82%AC%EC%9A%A9%EB%B2%95 "사용 예제 참고")
+
+[awk_1](https://blog.wonizz.tk/2019/08/06/linux-awk/ "기본 설명 참고")
+[awk_2](https://njoblab.tistory.com/10 "사용 예제 참고")
+
+
