@@ -227,6 +227,15 @@ shift   # skip --
 > *awk* 명령은 사용자가 정의한 명령어 집합을 이용하여 파일 집합과 사용자가 제공한 확장 표현식을 한번에 한 행씩 비교한 다음 확장 정규식과 일치하는 모든 행에 작용하여 특별한 작업을 해 준다.
 > 
 > 초기 개발자 Aho, Weinberger, Kernighan의 첫글자를 따서 이름지어진 *awk*는 GNU 프로젝트에서 만들어진 텍스트 처리 프로그래밍 언어로 유닉스 계열의 OS에서 사용 가능하며, 텍스트 형태로 되어있는 입력 데이터를 행과 단어 별로 처리해 출력한다.
+> 
+>> *awk*명령어 기능
+>> - 텍스트 파일의 전체 내용 출력
+>> - 파일의 특정 필드만 출력
+>> - 특정 필드에 문자열을 추가해서 출력
+>> - 패턴이 포함된 레코드 출력
+>> - 특정 필드에 연산 수행 결과 출력
+>> - 필드 값 비교에 따라 레코드 출력
+
  
 **[구문]**
 
@@ -242,4 +251,98 @@ shift   # skip --
 |-f|awk program 파일 경로 지정|
 |-v|awk program에서 사용될 특정 variable값 지정|
 
+**[예제]**
+```
+$ cat testfile 
 
+This is a apple
+linux is best os
+I am the best programmer.
+My hobby is riding a bicycle.
+Coding is so much fun.
+```
+
+1) 각 줄의 첫 단어를 출력
+```
+$ awk '{print $1}' testfile
+
+This
+linux
+I
+My
+Coding
+```
+2) -F 옵션을 사용하여 ':' 구분자 기준으로 첫 번째 필드 출력
+
+```
+$ awk -F : '{print $ 1}' /etc/passwd
+
+출력
+root
+bin
+daemon
+adm
+lp
+sync
+shutdown
+halt
+mail
+uucp
+operator
+```
+3) 여러 명령 실행은 ';' 으로 구분. 첫 번째 명령은 $3 필드 값을 변경하고 두 번째 명령은 전체 줄을 출력
+```
+$ echo "simple is best" | awk '{$3 = "good"; print $0}'
+
+simple is good
+```
+4) 파일에서 스크립트 읽기. awk 스크립트를 파일에 입력하고 -f 옵션을 사용하여 해당 파일을 지정
+```
+$ cat scriptfile 
+
+{print $1 " &&&& " $2 " " $3}
+
+$ awk -f scriptfile testfile 
+
+This &&&& is a
+linux &&&& is best
+I &&&& am the
+My &&&& hobby is
+Coding &&&& is so
+```
+5) 패턴별로 열 인쇄. 패턴 일치가 성공하면 AWK는 기본적으로 전체 레코드를 인쇄
+```
+$ awk '/a/ {print $3 "\t" $4}' testfile 
+
+a	apple
+the	best
+is	riding
+```
+6) ARGV => 명령 행 인수를 저장하는 배열. 배열의 유효한 인덱스 범위는 0에서 ARGC-1
+```
+$ awk 'BEGIN { 
+   for (i = 0; i < ARGC - 1; ++i) {
+      printf "ARGV[%d] = %s\n", i, ARGV[i]
+   }
+}' one two three four
+
+ARGV[0] = awk
+ARGV[1] = one
+ARGV[2] = two
+ARGV[3] = three
+```
+6) NF => 현재 레코드의 필드 수 출력
+```
+$ cat testfile | awk '{print NF}'
+
+4
+4
+5
+6
+5
+
+$ cat testfile | awk 'NF > 4'
+
+I am the best programmer.
+My hobby is riding a bicycle.
+Coding is so much fun.
